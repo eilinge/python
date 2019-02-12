@@ -1,0 +1,80 @@
+multiprocessing模块
+    就是跨平台版本的多线程模块。
+    提供了一个Process类来代表一个进程对象
+
+
+
+p = Process(target=run_proc, args=("test",)) 创建一个多进程
+os.getpid()  获取进程id
+start()  启动
+terminate()  提前结束子进程，不管子进程的任务是否完成
+join()  可以等待子进程结束后再继续往下运行，通常用于进程间的同步。
+
+
+
+
+进程间通信
+  multiprocessing模块包装了底层的机制，提供了Queue、Pipes等多种方式来交换数据。
+
+Process的语法如下：(https://blog.csdn.net/u014745194/article/details/70860986)
+    Process([group [, target [, name [, args [, kwargs]]]]])
+    target：表示这个进程实例所调用对象；
+    args：表示调用对象的位置参数元组；
+    kwargs：表示调用对象的关键字参数字典；
+    name：为当前进程实例的别名；
+    group：大多数情况下用不到，表示在哪个组；
+  Process类常用方法：
+    is_alive()：判断进程实例是否还在执行；
+    join([timeout])：是否等待进程实例执行结束，或等待多少秒；
+    start()：启动进程实例（创建子进程）；
+    run()：如果没有给定target参数，对这个对象调用start()方法时，就将执行对象中的run()方法；
+    terminate()：不管任务是否完成，立即终止；
+    Process类常用属性：
+    name：当前进程实例别名，默认为Process-N，N为从1开始递增的整数；
+    pid：当前进程实例的PID值；
+  multiprocessing.Pool常用函数解析:
+    apply_async(func[, args[, kwds]]) ：使用非阻塞方式调用func
+    （并行执行，堵塞方式必须等待上一个进程退出才能执行下一个进程），args为传递给func的参数列表，
+    kwds为传递给func的关键字参数列表；
+    apply(func[, args[, kwds]])：使用阻塞方式调用func
+    close()：关闭Pool，使其不再接受新的任务；
+    terminate()：不管任务是否完成，立即终止；
+    join()：主进程阻塞，等待子进程的退出， 必须在close或terminate之后使用；
+
+Thread的语法如下：
+    Thread([group [, target [, name [, args [, kwargs]]]]])
+    target：表示这个线程实例所调用对象；
+    args：表示调用对象的位置参数元组；
+    kwargs：表示调用对象的关键字参数字典；
+    name：为当前线程实例的别名；
+    group：大多数情况下用不到，表示在哪个组；
+  Thread类常用方法：
+    is_alive()：判断线程实例是否还在执行；
+    join([timeout])：是否等待线程实例执行结束，或等待多少秒；
+    start()：启动线程实例（创建子线程）；
+    run()：如果没有给定target参数，对这个对象调用start()方法时，就将执行对象中的run()方法；
+    setDaemon()	主线程执行过程中，守护线程也在进行，主线程执行完毕后，等待守护线程执行完成后，程序才停止。
+    	start()方法调用之前设置，如果不设置为守护线程，程序会被无限挂起。
+  Thread类常用属性：
+    name：当前线程实例别名，默认为Process-N，N为从1开始递增的整数；
+    pid：当前进程实例的PID值；
+    current_thread()	返回当前线程
+	active_count()	返回当前活跃的线程数，1个主线程+n个子线程
+	get_ident()	返回当前线程
+	enumerater()	返回当前活动 Thread 对象列表
+	main_thread()	返回主 Thread 对象
+
+
+
+分布式消息队列(Queue)
+  生产者和消费者彼此之间不直接通讯，而是通过阻塞队列来进行通讯，
+  所以生产者生产完数据之后不用等待消费者处理，直接扔给阻塞队列，
+  消费者不直接找生产者要数据，而是从阻塞队列里取，
+  阻塞队列就相当于一个缓冲区，平衡了生产者和消费者的处理能力，
+  解耦了生产者和消费者。
+
+  缺点:3个厨师本来就做得慢，10个顾客吃得又快又多，生产者能力不够。
+
+线程池:在切换线程的时候，需要切换上下文环境，线程很多的时候，依然会造成CPU的大量开销。
+
+
